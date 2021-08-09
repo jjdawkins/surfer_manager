@@ -1,0 +1,9 @@
+/**:
+  ros__parameters:
+    behaviors: ['waypoint','path']
+autonomy_node:
+  ros__parameters:
+    loop_period: 0.2
+    radius: 0.2
+    speed: 1
+    loop: false
