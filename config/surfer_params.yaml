@@ -1,9 +1,24 @@
 /**:
   ros__parameters:
-    behaviors: ['waypoint','path']
+    behaviors: ['waypoint','path','hashgame']
+    group: 'super_friends'
 autonomy_node:
   ros__parameters:
     loop_period: 0.2
     radius: 0.2
     speed: 1
     loop: false
+
+surfer_interface:
+  ros__parameters:
+    max_force_xy: 100
+    max_torqe_z: 100
+
+surfer_controller:
+  ros__parameters:
+    Kp_xy: 100.0
+    Ki_xy: 10.0
+    Kd_xy: 0
+    Kp_yaw: 100.0
+    Ki_yaw: 5.0
+    Kd_yaw: 0

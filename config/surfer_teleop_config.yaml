@@ -1,0 +1,14 @@
+surfer_teleop_node:
+  ros__parameters:
+    axis_linear:
+      x: 1
+      y: 0
+    scale_linear:
+      x: 50.0
+      y: 50.0
+    axis_angular:
+      yaw: 2
+    scale_angular:
+      yaw: 100.0
+    enable_button: 5
+    enable_turbo_button: 4

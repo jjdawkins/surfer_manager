@@ -6,6 +6,7 @@ from rcl_interfaces.msg import ParameterType
 
 from std_msgs.msg import String
 from nav_msgs.msg import Odometry
+from geometry_msgs.msg import PoseWithCovarianceStamped, Pose
 from surfer_msgs.msg import Status
 from surfer_msgs.srv import SetMode, Arming, SetBehavior, GetBehaviors, SetGroup
 
@@ -23,11 +24,11 @@ class SurferManager(Node):
         self.status.mode = 'IDLE'
 
 
-        self.declare_parameter('name')
+        self.declare_parameter('name','')
         self.declare_parameter('group','none')
         self.declare_parameter('id',0)
         self.declare_parameter('type','none')
-        self.declare_parameter('behaviors')
+        self.declare_parameter('behaviors',[''])
 
         self.status.name = self.get_parameter('name').get_parameter_value().string_value
         self.status.type = self.get_parameter('type').get_parameter_value().string_value
@@ -40,13 +41,14 @@ class SurferManager(Node):
         #self.status.type = str(self.get_parameter('type').get_parameter_value())
         #self.status.group = str(self.get_parameter('group').get_parameter_value())
 
+        self.pose = PoseWithCovarianceStamped()
 
         self.global_status_pub = self.create_publisher(Status, '/global_status', 10)
         self.status_pub = self.create_publisher(Status, 'status', 10)
+        self.pose_pub = self.create_publisher(PoseWithCovarianceStamped,'pose',10)
 
 
         self.odom_sub = self.create_subscription(Odometry,'odom',self.odomCallBack,10)
-        self.odom_sub  # prevent unused variable warning
 
         self.set_mode_srv = self.create_service(SetMode,'set_mode',self.setModeCallBack)
         self.arming_srv = self.create_service(Arming,'arm',self.armCallBack)
@@ -107,9 +109,11 @@ class SurferManager(Node):
         return response
 
     def odomCallBack(self,msg):
-        msg.pose
+        self.pose.header.stamp = self.get_clock().now().to_msg()
+        self.pose.pose = msg.pose
 
     def runLoop(self):
+        self.pose_pub.publish(self.pose)        
         self.global_status_pub.publish(self.status)
         self.status_pub.publish(self.status)
 
