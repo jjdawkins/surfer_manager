@@ -10,13 +10,13 @@ def generate_launch_description():
     ld = LaunchDescription()
 
     agent_name = os.environ.get('MY_NAME')
+    home_dir = os.environ.get('HOME')
 
     bridge = Node(
-        namespace=agent_name,
-        name="ros_bridge",
+        name=agent_name+"_ros_bridge",
         package="rosbridge_server",
         executable="rosbridge_websocket",
-        parameters=[{'port': 9091}],
+        parameters=[{'port': 9090}],
         output='screen'
     )
 
@@ -25,7 +25,7 @@ def generate_launch_description():
         name="manager_node",
         package="surfer_manager",
         executable="surfer_manager_node",
-        parameters=[{'name': agent_name}, {'type': 'sim_boat'},'/home/ubuntu/ros2_ws/src/surfer_manager/config/surfer_params.yaml'],
+        parameters=[{'name': agent_name}, {'type': 'sim_boat'},home_dir+'/ros2_ws/src/surfer_manager/config/surfer_params.yaml'],
         #parameters=[{'name': agent_name}, {'type': 'sim_boat'},{'group': 'avengers'},{'behaviors':['waypoint', 'path']}],
         output='screen'
     )
@@ -36,7 +36,7 @@ def generate_launch_description():
         name="surfer_interface",
         package="surfer_control",
         executable="surfer_interface",
-        parameters=['/home/ubuntu/ros2_ws/src/surfer_manager/config/surfer_params.yaml']
+        parameters=[home_dir+'/ros2_ws/src/surfer_manager/config/surfer_params.yaml']
     )
 
     controller = Node(
@@ -44,7 +44,7 @@ def generate_launch_description():
         name="surfer_controller",
         package="surfer_control",
         executable="surfer_controller",
-        parameters=['/home/ubuntu/ros2_ws/src/surfer_manager/config/surfer_params.yaml'],
+        parameters=[home_dir+'/ros2_ws/src/surfer_manager/config/surfer_params.yaml'],
         #remappings=[('/'+agent_name+'/odom','/model/'+agent_name+'/odometry')],
         output='screen'
     )
@@ -55,7 +55,7 @@ def generate_launch_description():
         name="autonomy_node",
         package="surfer_autonomy",
         executable="surfer_autonomy_node",
-        parameters=['/home/ubuntu/ros2_ws/src/surfer_manager/config/surfer_params.yaml'],
+        parameters=[home_dir+'/ros2_ws/src/surfer_manager/config/surfer_params.yaml'],
         #remappings=[('/'+agent_name+'/odom','/model/'+agent_name+'/odometry')],
         output='screen'
     )
