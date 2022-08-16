@@ -1,3 +1,4 @@
+from argparse import ArgumentTypeError
 import os
 from launch import LaunchDescription
 from ament_index_python.packages import get_package_share_directory
@@ -23,7 +24,8 @@ def generate_launch_description():
             output='screen'
         )
 
-        bridge = Node(
+        ign_bridge = Node(
+            name=agent_name+'_ign_bridge',
             package='ros_ign_bridge',
             executable='parameter_bridge',
             arguments=['/model/'+agent_name+'/joint/propeller_joint_fr/cmd_thrust@std_msgs/msg/Float64@ignition.msgs.Double',
@@ -80,7 +82,17 @@ def generate_launch_description():
         ld.add_action(manager)
         ld.add_action(interface)
         ld.add_action(controller)
-        #ld.add_action(autonomy)
+        zld.add_action(autonomy)
         #ld.add_action(ignition)
-        ld.add_action(bridge)
+        ld.add_action(ign_bridge)
+
+    ros_bridge = Node(
+    name="ros_bridge",
+    package="rosbridge_server",
+    executable="rosbridge_websocket",
+    parameters=[{'port': 9090}],
+    output='screen'
+    )
+    ld.add_action(ros_bridge)
+        
     return ld
